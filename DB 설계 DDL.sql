@@ -9,7 +9,8 @@ CREATE TABLE users (
     detail_address VARCHAR(255),
     activity_range DECIMAL(6, 3) DEFAULT 0.000, -- 활동 반경, 최대 999.999
     profile_picture_url VARCHAR(500),
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT chk_activity_range CHECK (activity_range >= 0 AND activity_range <= 999.999) -- CHECK 제약 조건
 );
 
 -- 게시글 정보를 저장하는 테이블
@@ -35,39 +36,21 @@ CREATE TABLE post_views (
     FOREIGN KEY (post_id) REFERENCES posts(post_id) ON DELETE CASCADE
 );
 
--- 조회 내역이 추가될 때 게시글의 조회수를 증가시키는 트리거
-DELIMITER $$
+-- 검색 기록을 저장하는 테이블
+CREATE TABLE search_log (
+    search_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL, -- 검색한 사용자 ID
+    search_keyword VARCHAR(255) NOT NULL, -- 검색어
+    searched_at DATETIME DEFAULT CURRENT_TIMESTAMP, -- 검색 시간
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
 
-CREATE TRIGGER update_post_view_count
-AFTER INSERT ON post_views
-FOR EACH ROW
-BEGIN
-    UPDATE posts
-    SET view_count = view_count + 1
-    WHERE post_id = NEW.post_id;
-END$$
+-- 인기 검색어를 계산하는 쿼리를 위한 뷰 생성
+CREATE VIEW popular_search_keywords AS
+SELECT 
+    search_keyword,
+    COUNT(*) AS search_count
+FROM search_log
+GROUP BY search_keyword
+ORDER BY search_count DESC, search_keyword ASC;
 
-DELIMITER ;
-
--- 외래 키 추가 명령어
-ALTER TABLE posts
-  ADD CONSTRAINT FK_user_TO_posts
-    FOREIGN KEY (user_id)
-    REFERENCES users (user_id);
-
-ALTER TABLE post_views
-  ADD CONSTRAINT FK_user_TO_post_views
-    FOREIGN KEY (user_id)
-    REFERENCES users (user_id),
-  ADD CONSTRAINT FK_post_TO_post_views
-    FOREIGN KEY (post_id)
-    REFERENCES posts (post_id);
-
--- 추가 인덱스 설정
-CREATE INDEX idx_user_email ON users (email);
-CREATE INDEX idx_post_user ON posts (user_id);
-CREATE INDEX idx_post_views_user_post ON post_views (user_id, post_id);
-
--- CHECK 제약 조건 추가
-ALTER TABLE users
-  ADD CONSTRAINT chk_activity_range CHECK (activity_range >= 0 AND activity_range <= 999.999);
