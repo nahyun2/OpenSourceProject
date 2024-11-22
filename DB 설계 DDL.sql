@@ -94,22 +94,22 @@ ORDER BY search_count DESC, search_word ASC;
 
 
 -- 관계 설정
-ALTER TABLE image
+ALTER TABLE images
   ADD CONSTRAINT FK_board_TO_image
     FOREIGN KEY (board_number)
     REFERENCES board (board_number);
 
-ALTER TABLE board
+ALTER TABLE boards
   ADD CONSTRAINT FK_user_TO_board
     FOREIGN KEY (writer_email)
     REFERENCES user (email);
 
-ALTER TABLE comment
+ALTER TABLE comments
   ADD CONSTRAINT FK_user_TO_comment
     FOREIGN KEY (user_email)
     REFERENCES user (email);
 
-ALTER TABLE comment
+ALTER TABLE comments
   ADD CONSTRAINT FK_board_TO_comment
     FOREIGN KEY (board_number)
     REFERENCES board (board_number);
