@@ -1,4 +1,4 @@
--- 게시물 테이블
+-- 게시물 테이블 (최대 참가 인원 추가)
 CREATE TABLE boards (
   board_number   INT         NOT NULL AUTO_INCREMENT COMMENT '게시물 번호',
   title          TEXT        NOT NULL COMMENT '게시물 제목',
@@ -6,8 +6,11 @@ CREATE TABLE boards (
   write_datetime DATETIME    NOT NULL COMMENT '게시물 작성 날짜 및 시간',
   comment_count  INT         NOT NULL DEFAULT 0 COMMENT '게시물 댓글 수',
   view_count     INT         NOT NULL DEFAULT 0 COMMENT '게시물 조회 수',
+  max_participants INT       NOT NULL DEFAULT 10 COMMENT '최대 참가 인원',
+  current_participants INT   NOT NULL DEFAULT 0 COMMENT '현재 참가 인원',
   writer_email   VARCHAR(50) NOT NULL COMMENT '작성자 이메일',
-  PRIMARY KEY (board_number)
+  PRIMARY KEY (board_number),
+  FOREIGN KEY (writer_email) REFERENCES users(email) ON DELETE CASCADE
 ) COMMENT '게시물 테이블';
 
 -- 댓글 테이블
@@ -92,6 +95,17 @@ FROM search_log
 GROUP BY search_word
 ORDER BY search_count DESC, search_word ASC;
 
+-- 참가자 관리 테이블
+CREATE TABLE group_participants (
+  participant_id   INT AUTO_INCREMENT PRIMARY KEY COMMENT '참가 요청 ID',
+  board_number     INT         NOT NULL COMMENT '게시물 번호',
+  user_email       VARCHAR(50) NOT NULL COMMENT '참가자 이메일',
+  request_status   ENUM('PENDING', 'ACCEPTED', 'REJECTED') DEFAULT 'PENDING' COMMENT '참가 요청 상태',
+  requested_at     DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '참가 요청 시간',
+  FOREIGN KEY (board_number) REFERENCES boards(board_number) ON DELETE CASCADE,
+  FOREIGN KEY (user_email) REFERENCES users(email) ON DELETE CASCADE,
+  UNIQUE(board_number, user_email) -- 동일 게시물에 중복 참가 요청 방지
+) COMMENT '운동 그룹 참가자 관리 테이블';
 
 -- 관계 설정
 ALTER TABLE images
