@@ -64,7 +64,7 @@ CREATE TABLE board_views (
 ) COMMENT '게시글 조회 내역 테이블';
 
 -- 게시물 리스트 뷰 생성
-CREATE VIEW board_list_views AS 
+CREATE VIEW board_views AS 
 SELECT 
     B.board_number AS board_number,
     B.title AS title,
