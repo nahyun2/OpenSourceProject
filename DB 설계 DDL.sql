@@ -1,5 +1,5 @@
 -- 게시물 테이블
-CREATE TABLE board (
+CREATE TABLE boards (
   board_number   INT         NOT NULL AUTO_INCREMENT COMMENT '게시물 번호',
   title          TEXT        NOT NULL COMMENT '게시물 제목',
   content        TEXT        NOT NULL COMMENT '게시물 내용',
@@ -11,7 +11,7 @@ CREATE TABLE board (
 ) COMMENT '게시물 테이블';
 
 -- 댓글 테이블
-CREATE TABLE comment (
+CREATE TABLE comments (
   comment_number INT         NOT NULL AUTO_INCREMENT COMMENT '댓글 번호',
   content        TEXT        NOT NULL COMMENT '댓글 내용',
   write_datetime DATETIME    NOT NULL COMMENT '댓글 작성 날짜 및 시간',
@@ -21,7 +21,7 @@ CREATE TABLE comment (
 ) COMMENT '댓글 테이블';
 
 -- 게시물 이미지 테이블
-CREATE TABLE image (
+CREATE TABLE images (
   sequence       INT         NOT NULL AUTO_INCREMENT COMMENT '이미지 번호',
   board_number   INT         NOT NULL COMMENT '게시물 번호',
   image          TEXT        NOT NULL COMMENT '게시물 이미지 URL',
@@ -29,7 +29,7 @@ CREATE TABLE image (
 ) COMMENT '게시물 이미지 테이블';
 
 -- 검색 기록 테이블
-CREATE TABLE search_log (
+CREATE TABLE search_logs (
   sequence        INT         NOT NULL AUTO_INCREMENT COMMENT '시퀀스',
   search_word     TEXT        NOT NULL COMMENT '검색어',
   relation_word   TEXT        NULL     COMMENT '관련 검색어',
@@ -38,7 +38,7 @@ CREATE TABLE search_log (
 ) COMMENT '검색 기록 테이블';
 
 -- 사용자 테이블
-CREATE TABLE user (
+CREATE TABLE users (
   email           VARCHAR(50)  NOT NULL COMMENT '사용자 이메일',
   password        VARCHAR(100) NOT NULL COMMENT '사용자 비밀번호',
   nickname        VARCHAR(20)  NOT NULL UNIQUE COMMENT '사용자 닉네임',
@@ -50,7 +50,7 @@ CREATE TABLE user (
 ) COMMENT '사용자 테이블';
 
 -- 게시글 조회 내역 테이블
-CREATE TABLE board_view (
+CREATE TABLE board_views (
   view_id      INT AUTO_INCREMENT PRIMARY KEY COMMENT '조회 ID',
   user_email   VARCHAR(50) NOT NULL COMMENT '조회한 사용자 이메일',
   board_number INT         NOT NULL COMMENT '조회된 게시물 번호',
@@ -61,7 +61,7 @@ CREATE TABLE board_view (
 ) COMMENT '게시글 조회 내역 테이블';
 
 -- 게시물 리스트 뷰 생성
-CREATE VIEW board_list_view AS 
+CREATE VIEW board_list_views AS 
 SELECT 
     B.board_number AS board_number,
     B.title AS title,
