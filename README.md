@@ -79,3 +79,8 @@ SpringBoot 설치
 
 #### 나머지 오류 발생 시 대면 때 해결
 
+2024.11.22 - 영상 챕터 35번까지
+[Youtube 영상 링크](https://www.youtube.com/watch?v=NTZgPYlassE&list=PLbq5jHjpmq7q-Td2jOXtpf7SD5c53RqXh)
+프로젝트 파일은 카카오톡 업로드(임시) -> Git 으로 관리 예정
+
+
