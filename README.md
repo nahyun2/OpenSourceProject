@@ -34,7 +34,7 @@
 JAVA version: jdk 21
 
 환경변수 설정: C:\Program Files\Java\jdk-21\bin
--> Path에 설정
+-> Path에 설정, 자신의 버전과 달라도 스위칭 마음대로 가능하니 편하게.
 ```
 
 1. [JAVA-21 버전 설치](https://www.oracle.com/java/technologies/javase/jdk21-archive-downloads.html)
