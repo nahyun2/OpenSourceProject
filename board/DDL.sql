@@ -1,5 +1,4 @@
 -- Active: 1732257373510@@127.0.0.1@3306@board_jihoon
--- Active: 1732257373510@@127.0.0.1@3306@board2
 CREATE TABLE `user` (
   `email` varchar(50) COLLATE utf8mb3_bin NOT NULL COMMENT '유저 이메일',
   `password` varchar(200) COLLATE utf8mb3_bin NOT NULL COMMENT '암호화된 비밀번호',
@@ -45,6 +44,7 @@ CREATE TABLE `comment` (
   `board_number` int NOT NULL COMMENT '댓글 대상 게시물 번호',
   `contents` text COLLATE utf8mb3_bin NOT NULL COMMENT '댓글 내용',
   `write_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '댓글 작성 날짜 및 시간',
+  PRIMARY KEY (`comment_number`),
   KEY `comment_user_FK_idx` (`user_email`),
   KEY `comment_board_FK_idx` (`board_number`),
   CONSTRAINT `comment_board_FK` FOREIGN KEY (`board_number`) REFERENCES `board` (`board_number`) ON DELETE RESTRICT ON UPDATE RESTRICT,
