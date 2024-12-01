@@ -1,3 +1,5 @@
+-- Active: 1732257373510@@127.0.0.1@3306@board_jihoon
+-- Active: 1732257373510@@127.0.0.1@3306@board2
 CREATE TABLE `user` (
   `email` varchar(50) COLLATE utf8mb3_bin NOT NULL COMMENT '유저 이메일',
   `password` varchar(200) COLLATE utf8mb3_bin NOT NULL COMMENT '암호화된 비밀번호',
@@ -38,6 +40,7 @@ CREATE TABLE `board_image` (
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin COMMENT='게시물 이미지 테이블';
 
 CREATE TABLE `comment` (
+  'comment_number' int NOT NULL AUTO_INCREMENT COMMENT '댓글 번호',
   `user_email` varchar(50) COLLATE utf8mb3_bin NOT NULL COMMENT '댓글 작성자 이메일',
   `board_number` int NOT NULL COMMENT '댓글 대상 게시물 번호',
   `contents` text COLLATE utf8mb3_bin NOT NULL COMMENT '댓글 내용',
