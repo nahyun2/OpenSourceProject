@@ -67,6 +67,20 @@ CREATE TABLE `search_log` (
   `relation` tinyint(1) NOT NULL COMMENT '연관검색어여부'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin COMMENT='검색 기록 테이블';
 
+CREATE TABLE `team_matching` (
+  `team_number` int NOT NULL AUTO_INCREMENT COMMENT '팀 번호',
+  `team_leader_nickname` varchar(50) COLLATE utf8mb3_bin NOT NULL COMMENT '팀장 닉네임',
+  `team_member_nickname` varchar(50) COLLATE utf8mb3_bin NOT NULL COMMENT '팀원 닉네임',
+  `team_member_total_count` int NOT NULL COMMENT '총 팀원 수',
+  `team_member_current_count` int NOT NULL COMMENT '현재 팀원 수',
+  `team_image_url` text COLLATE utf8mb3_bin NOT NULL COMMENT '오픈채팅 URL',
+  PRIMARY KEY (`team_number`),
+  KEY `fk_team_matching_user1_idx` (`team_leader_nickname`),
+  KEY `fk_team_matching_user2_idx` (`team_member_nickname`),
+  CONSTRAINT `fk_team_matching_user1` FOREIGN KEY (`team_leader_nickname`) REFERENCES `user` (`nickname`),
+  CONSTRAINT `fk_team_matching_user2` FOREIGN KEY (`team_member_nickname`) REFERENCES `user` (`nickname`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin COMMENT='팀 매칭 테이블';
+
 CREATE VIEW board_view AS
 SELECT 
     B.board_number AS board_number,
