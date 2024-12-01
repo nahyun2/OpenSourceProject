@@ -39,7 +39,7 @@ CREATE TABLE `board_image` (
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin COMMENT='게시물 이미지 테이블';
 
 CREATE TABLE `comment` (
-  'comment_number' int NOT NULL AUTO_INCREMENT COMMENT '댓글 번호',
+  `comment_number` int NOT NULL AUTO_INCREMENT COMMENT '댓글 번호',
   `user_email` varchar(50) COLLATE utf8mb3_bin NOT NULL COMMENT '댓글 작성자 이메일',
   `board_number` int NOT NULL COMMENT '댓글 대상 게시물 번호',
   `contents` text COLLATE utf8mb3_bin NOT NULL COMMENT '댓글 내용',
