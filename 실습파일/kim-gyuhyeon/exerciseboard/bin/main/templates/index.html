@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>임시 게시판 24.10.15</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+    <div class="header">
+        <h1>임시 게시판 24.10.15</h1>
+        <div class="auth-buttons">
+            <sec:authorize access="isAuthenticated()">
+                <form th:action="@{/logout}" method="post">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                    <!-- <button type="submit" class="button">로그아웃</button> -->
+                </form>
+            </sec:authorize>
+            <sec:authorize access="!isAuthenticated()">
+                <a th:href="@{/login}" class="button">로그인</a>
+                <a th:href="@{/register}" class="button">회원가입</a>
+            </sec:authorize>
+        </div>
+    </div>
+    
+    <div class="buttons">
+        <a th:href="@{/board/create}" class="button">글 작성</a>
+    </div>
+    
+    <table>
+        <thead>
+            <tr>
+                <th class="category-column">카테고리</th>
+                <th class="author-column">글쓴이</th>
+                <th class="title-column">제목</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="post : ${posts}">
+                <td th:text="${post.category}" class="category-column"></td>
+                <td th:text="${post.author}" class="author-column"></td>
+                <td th:text="${post.title}" class="title-column"></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
