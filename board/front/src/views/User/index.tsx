@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
+import React, { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import './style.css';
 import { useNavigate, useParams } from 'react-router-dom';
 import { userBoardListMock, userMock } from 'mocks';
@@ -20,7 +20,7 @@ import 'react-calendar/dist/Calendar.css';
 import type { Value } from 'react-calendar/dist/cjs/shared/types';
 
 //          component: 유저 페이지          //
-export default function User() {
+const User = React.memo(() => {
 
   //          state: 조회하는 유저 이메일 path variable 상태           //
   const { searchEmail } = useParams();
@@ -39,34 +39,37 @@ export default function User() {
   const navigator = useNavigate();
 
   // 캘린더 핸들러들 추가
-  const handleDateClick = (value: Value, event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleDateClick = useCallback((value: Value, event: React.MouseEvent<HTMLButtonElement>) => {
     if (!value || value instanceof Array) return;
     setSelectedDate(value);
     setShowDiaryModal(true);
     const dateStr = value.toISOString().split('T')[0];
     setDiaryContent(diaryEntries[dateStr] || '');
-  };
+  }, [diaryEntries]);
 
-  const handleCloseModal = () => {
+  const handleCloseModal = useCallback(() => {
     setShowDiaryModal(false);
     document.body.classList.remove('modal-open');
-  };
+  }, []);
 
-  const tileContent = ({ date }: { date: Date }) => {
-    const dateStr = date.toISOString().split('T')[0];
-    return diaryEntries[dateStr] ? <div className="diary-icon">💪</div> : null;
-  };
+  const diaryContentRef = useRef<HTMLTextAreaElement | null>(null);
 
-  const handleSaveDiary = () => {
-    if (!selectedDate) return;
+  const handleSaveDiary = useCallback(() => {
+    if (!selectedDate || !diaryContentRef.current) return;
     const dateStr = selectedDate.toISOString().split('T')[0];
     setDiaryEntries(prev => ({
       ...prev,
-      [dateStr]: diaryContent
+      [dateStr]: diaryContentRef.current!.value
     }));
     setShowDiaryModal(false);
     document.body.classList.remove('modal-open');
-  };
+  }, [selectedDate]);
+
+  // Memoize tileContent to prevent re-renders
+  const tileContent = useMemo(() => ({ date }: { date: Date }) => {
+    const dateStr = date.toISOString().split('T')[0];
+    return diaryEntries[dateStr] ? <div className="diary-icon">💪</div> : null;
+  }, [diaryEntries]);
 
   //          component: 유저 정보 컴포넌트          //
   const UserInfo = () => {
@@ -190,7 +193,7 @@ export default function User() {
       patchNicknameRequest(requestBody, accessToken).then(patchNicknameResponse);
     }
 
-    //          event handler: 프로필 이미��  ���벤트 처리          //
+    //          event handler: 프로필 이미지 변경 이벤트 처리          //
     const onProfileImageChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
       if (!event.target.files || !event.target.files.length) return;
 
@@ -200,7 +203,7 @@ export default function User() {
 
       fileUploadRequest(data).then(fileUploadResponse);
     };
-    //          event handler: 닉네임 변경 이벤트 리          //
+    //          event handler: 닉네임 변경 이벤트 처리          //
     const onNicknameChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
       const nickname = event.target.value;
       setNickname(nickname);
@@ -288,7 +291,7 @@ export default function User() {
       else navigator(USER_PATH(user.email));
     }
 
-    //          effect: 조회하는 유저의 이메일이 변경될 때 마다 실행할 ��수 //
+    //          effect: 조회하는 유저의 이메일이 변경될 때 마다 실행할 함수
     useEffect(() => {
       if (!searchEmail) {
         navigator(MAIN_PATH);
@@ -349,11 +352,13 @@ export default function User() {
     );
   };
 
-  //          effect: 조회하는 유저의 이메일이 변경될 때 마다 실행할 함수 //
+  //          effect: 조회하는 유저의 이메일이 변경될 때 마다 실행할 함수
   useEffect(() => {
     const isMyPage = searchEmail === user?.email;
-    setMyPage(isMyPage);
-  } , [searchEmail, user]);
+    if (isMyPage !== isMyPage) {
+      setMyPage(isMyPage);
+    }
+  }, [searchEmail, user?.email]);
 
   //          render: 유저 페이지 렌더링          //
   return (
@@ -379,11 +384,10 @@ export default function User() {
                   .sort((a, b) => new Date(b[0]).getTime() - new Date(a[0]).getTime())
                   .slice(0, 5)
                   .map(([date, content]) => {
-                    // 날짜 포맷팅을 위한 함수
                     const formatDate = (dateString: string) => {
                       const date = new Date(dateString);
                       const year = date.getFullYear();
-                      const month = date.getMonth() + 1; // 월에 1을 더해줍니다
+                      const month = date.getMonth() + 1;
                       const day = date.getDate() + 1;
                       return `${year}년 ${month}월 ${day}일`;
                     };
@@ -415,8 +419,8 @@ export default function User() {
           <div className="diary-modal">
             <h3>{selectedDate?.toLocaleDateString()} 운동 기록</h3>
             <textarea
-              value={diaryContent}
-              onChange={(e) => setDiaryContent(e.target.value)}
+              ref={diaryContentRef}
+              defaultValue={diaryContent}
               placeholder="오늘의 운동을 기록해보세요...
               
 예시:
@@ -433,5 +437,7 @@ export default function User() {
       )}
       <UserBoardList />
     </div>
-  )
-}
+  );
+});
+
+export default User;
