@@ -237,7 +237,7 @@ export default function Header() {
           <div className='header-logo-icon-box'>
             <div className='logo-dark-icon'></div>
           </div>
-          <div className='header-logo-text'>{'Hoons Board'}</div>
+          <div className='header-logo-text'>{'WellbeingHub'}</div>
         </div>
         <div className='header-right-box'>
           { isAuthPage && (<Search />) }

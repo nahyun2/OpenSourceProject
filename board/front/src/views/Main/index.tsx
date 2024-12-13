@@ -42,7 +42,7 @@ export default function Main() {
     return (
       <div id='main-top-wrapper'>
         <div className='main-top-container'>
-          <div className='main-top-intro'>{'Hoon Board에서\n다양한 이야기를 나눠보세요'}</div>
+          <div className='main-top-intro'>{'WellbeingHub에서\n다양한 이야기를 나눠보세요'}</div>
           <div className='main-top-contents-box'>
             <div className='main-top-contents-title'>{'주간 TOP 3 게시글'}</div>
             <div className='main-top-contents'>

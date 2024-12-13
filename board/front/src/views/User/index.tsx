@@ -15,6 +15,9 @@ import { GetUserBoardListResponseDto } from 'apis/dto/response/board';
 import { useCookies } from 'react-cookie';
 import { PatchBoardRequestDto } from 'apis/dto/request/board';
 import { PatchNicknameRequestDto, PatchProfileImageRequestDto } from 'apis/dto/request/user';
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
+import type { Value } from 'react-calendar/dist/cjs/shared/types';
 
 //          component: 유저 페이지          //
 export default function User() {
@@ -26,8 +29,44 @@ export default function User() {
   //          state: 본인 여부 상태           //
   const [isMyPage, setMyPage] = useState<boolean>(false);
 
+  //          state: 캘린더 관련 상태 추가           //
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [showDiaryModal, setShowDiaryModal] = useState<boolean>(false);
+  const [diaryContent, setDiaryContent] = useState<string>('');
+  const [diaryEntries, setDiaryEntries] = useState<{[key: string]: string}>({});
+
   //          function: 네비게이트 함수          //
   const navigator = useNavigate();
+
+  // 캘린더 핸들러들 추가
+  const handleDateClick = (value: Value, event: React.MouseEvent<HTMLButtonElement>) => {
+    if (!value || value instanceof Array) return;
+    setSelectedDate(value);
+    setShowDiaryModal(true);
+    const dateStr = value.toISOString().split('T')[0];
+    setDiaryContent(diaryEntries[dateStr] || '');
+  };
+
+  const handleCloseModal = () => {
+    setShowDiaryModal(false);
+    document.body.classList.remove('modal-open');
+  };
+
+  const tileContent = ({ date }: { date: Date }) => {
+    const dateStr = date.toISOString().split('T')[0];
+    return diaryEntries[dateStr] ? <div className="diary-icon">💪</div> : null;
+  };
+
+  const handleSaveDiary = () => {
+    if (!selectedDate) return;
+    const dateStr = selectedDate.toISOString().split('T')[0];
+    setDiaryEntries(prev => ({
+      ...prev,
+      [dateStr]: diaryContent
+    }));
+    setShowDiaryModal(false);
+    document.body.classList.remove('modal-open');
+  };
 
   //          component: 유저 정보 컴포넌트          //
   const UserInfo = () => {
@@ -151,7 +190,7 @@ export default function User() {
       patchNicknameRequest(requestBody, accessToken).then(patchNicknameResponse);
     }
 
-    //          event handler: 프로필 이미지 변경 이벤트 처리          //
+    //          event handler: 프로필 이미��  ���벤트 처리          //
     const onProfileImageChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
       if (!event.target.files || !event.target.files.length) return;
 
@@ -161,7 +200,7 @@ export default function User() {
 
       fileUploadRequest(data).then(fileUploadResponse);
     };
-    //          event handler: 닉네임 변경 이벤트 처리          //
+    //          event handler: 닉네임 변경 이벤트 리          //
     const onNicknameChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
       const nickname = event.target.value;
       setNickname(nickname);
@@ -216,7 +255,7 @@ export default function User() {
   //          component: 유저 게시물 컴포넌트          //
   const UserBoardList = () => {
 
-    //          state: 페이지네이션 관련 상태          //
+    //          state: 페이네이션 관련 상태          //
     const { currentPageNumber, setCurrentPageNumber, currentSectionNumber, setCurrentSectionNumber,
     viewBoardList, viewPageNumberList, totalSection, setBoardList } = usePagination<BoardListItem>(5);
     //          state: 게시물 개수 상태          //
@@ -249,7 +288,7 @@ export default function User() {
       else navigator(USER_PATH(user.email));
     }
 
-    //          effect: 조회하는 유저의 이메일이 변경될 때 마다 실행할 함수 //
+    //          effect: 조회하는 유저의 이메일이 변경될 때 마다 실행할 ��수 //
     useEffect(() => {
       if (!searchEmail) {
         navigator(MAIN_PATH);
@@ -318,9 +357,81 @@ export default function User() {
 
   //          render: 유저 페이지 렌더링          //
   return (
-    <>
+    <div className="user-page-container">
       <UserInfo />
+      <div className="calendar-section">
+        <div className="calendar-wrapper">
+          <h2 className="calendar-title">운동 일지</h2>
+          <div className="calendar-content-container">
+            <div className="calendar-container">
+              <Calendar
+                onChange={handleDateClick}
+                value={selectedDate}
+                tileContent={tileContent}
+                locale="ko"
+                formatDay={(locale, date) => date.getDate().toString()}
+              />
+            </div>
+            <div className="recent-entries-container">
+              <h3>최근 운동 기록</h3>
+              <div className="recent-entries-list">
+                {Object.entries(diaryEntries)
+                  .sort((a, b) => new Date(b[0]).getTime() - new Date(a[0]).getTime())
+                  .slice(0, 5)
+                  .map(([date, content]) => {
+                    // 날짜 포맷팅을 위한 함수
+                    const formatDate = (dateString: string) => {
+                      const date = new Date(dateString);
+                      const year = date.getFullYear();
+                      const month = date.getMonth() + 1; // 월에 1을 더해줍니다
+                      const day = date.getDate() + 1;
+                      return `${year}년 ${month}월 ${day}일`;
+                    };
+
+                    return (
+                      <div key={date} className="recent-entry-item">
+                        <div className="recent-entry-date">
+                          {formatDate(date)}
+                        </div>
+                        <div className="recent-entry-content">
+                          {content.length > 100 ? content.substring(0, 100) + '...' : content}
+                        </div>
+                      </div>
+                    );
+                  })}
+                {Object.keys(diaryEntries).length === 0 && (
+                  <div className="no-entries-message">
+                    아직 작성된 운동 기록이 없습니다.
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {showDiaryModal && (
+        <>
+          <div className="modal-overlay" onClick={handleCloseModal} />
+          <div className="diary-modal">
+            <h3>{selectedDate?.toLocaleDateString()} 운동 기록</h3>
+            <textarea
+              value={diaryContent}
+              onChange={(e) => setDiaryContent(e.target.value)}
+              placeholder="오늘의 운동을 기록해보세요...
+              
+예시:
+- 스쿼트 3세트 (12회)
+- 데드리프트 4세트 (10회)
+- 러닝 30분"
+            />
+            <div className="diary-modal-buttons">
+              <button onClick={handleCloseModal}>취소</button>
+              <button onClick={handleSaveDiary}>저장</button>
+            </div>
+          </div>
+        </>
+      )}
       <UserBoardList />
-    </>
+    </div>
   )
 }
