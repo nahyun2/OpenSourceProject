@@ -249,8 +249,13 @@ const User = () => {
     const getSignInUserResponse = (responseBody: GetSignInUserResponseDto | ResponseDto) => {
       const { code } = responseBody;
       if (code !== 'SU') {
-        setCookie('accessToken', '', { expires: new Date(), path: MAIN_PATH });
         setUser(null);
+        setCookie('accessToken', '', { 
+          expires: new Date(0),
+          path: '/'
+        });
+        // 로그아웃 시 메인 페이지로 이동
+        navigator(MAIN_PATH);
         return;
       }
 
@@ -300,6 +305,16 @@ const User = () => {
       const newNickname = event.target.value;
       setNickname(newNickname);
     }, []);
+
+    //          event handler: 로그아웃 버튼 클릭 이벤트 처리          //
+    const onLogoutButtonClickHandler = () => {
+      setUser(null);
+      setCookie('accessToken', '', { 
+        expires: new Date(0),
+        path: '/'
+      });
+      navigator(MAIN_PATH);
+    };
 
     //          effect: 조회하는 유저의 이메일이 변경될 때 마다 실행할 함수          //
     useEffect(() => {

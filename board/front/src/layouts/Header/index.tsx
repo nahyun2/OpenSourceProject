@@ -117,7 +117,7 @@ export default function Header() {
   //          component: 업로드 버튼 컴포넌트          //
   const UploadButton = () => {
 
-    //          state: 게시물 번호 path variable 상태          //
+    //          state: ���시물 번호 path variable 상태          //
     const { boardNumber } = useParams();
     //          state: 게시물 제목, 내용, 이미지 전역 상태          //
     const { title, contents, images, resetBoard } = useBoardStore();
@@ -212,6 +212,8 @@ export default function Header() {
     const onLogoutButtonClickHandler = () => {
       setCookies('accessToken', '', { path: '/', expires: new Date() });
       setUser(null);
+      // 로그아웃 후 메인 페이지로 이동
+      navigator(MAIN_PATH);
     }
 
     //          render: 본인 페이지 일 때 버튼 컴포넌트 렌더링          //
