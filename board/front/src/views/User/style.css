@@ -521,3 +521,69 @@ body.modal-open {
     background-position: center;
 }
 
+/* Calendar 토요일 색상 변경 */
+.react-calendar__month-view__days__day--weekend:nth-child(7n) {
+    color: #0066cc;  /* 파란색으로 변경 */
+}
+
+/* 선택된 날짜가 토요일일 때도 파란색 유지 */
+.react-calendar__tile--active.react-calendar__month-view__days__day--weekend:nth-child(7n) {
+    color: #0066cc;
+}
+
+/* hover 상태일 때도 파란색 유지 */
+.react-calendar__tile:enabled:hover.react-calendar__month-view__days__day--weekend:nth-child(7n) {
+    color: #0066cc;
+}
+
+/* 일요일 색상 (첫 번째 열) */
+.react-calendar__month-view__days__day--weekend:nth-child(7n+1) {
+    color: #ff0000;  /* 일요일 - 빨간색 */
+}
+
+/* 토요일 색상 (마지막 열) */
+.react-calendar__month-view__days__day--weekend:nth-child(7n) {
+    color: #0066cc;  /* 토요일 - 파란색 */
+}
+
+/* 해당 월에 속하지 않는 날짜 색상 */
+.react-calendar__month-view__days__day--neighboringMonth {
+    color: #757575 !important;  /* 회색으로 고정 */
+}
+
+/* 선택된 날짜가 주말일 때의 색상 유지 */
+.react-calendar__tile--active.react-calendar__month-view__days__day--weekend:nth-child(7n) {
+    color: #0066cc;  /* 토요일 - 파란색 */
+}
+.react-calendar__tile--active.react-calendar__month-view__days__day--weekend:nth-child(7n+1) {
+    color: #ff0000;  /* 일요일 - 빨간색 */
+}
+
+/* hover 상태일 때의 색상 유지 */
+.react-calendar__tile:enabled:hover.react-calendar__month-view__days__day--weekend:nth-child(7n) {
+    color: #0066cc;  /* 토요일 - 파란색 */
+}
+.react-calendar__tile:enabled:hover.react-calendar__month-view__days__day--weekend:nth-child(7n+1) {
+    color: #ff0000;  /* 일요일 - 빨간색 */
+}
+
+/* 주말 날짜 기본 색상 설정 */
+/* 일요일 - 첫 번째 열 (7n+1) */
+.react-calendar__month-view__days__day--weekend:nth-child(7n+1),
+.react-calendar__tile--active.react-calendar__month-view__days__day--weekend:nth-child(7n+1),
+.react-calendar__tile:enabled:hover.react-calendar__month-view__days__day--weekend:nth-child(7n+1) {
+    color: #ff0000;  /* 일요일 - 빨간색 */
+}
+
+/* 토요일 - 마지막 열 (7n) */
+.react-calendar__month-view__days__day--weekend:nth-child(7n),
+.react-calendar__tile--active.react-calendar__month-view__days__day--weekend:nth-child(7n),
+.react-calendar__tile:enabled:hover.react-calendar__month-view__days__day--weekend:nth-child(7n) {
+    color: #0066cc;  /* 토요일 - 파란색 */
+}
+
+/* 해당 월에 속하지 않는 날짜는 항상 회색 */
+.react-calendar__month-view__days__day--neighboringMonth {
+    color: #757575 !important;
+}
+

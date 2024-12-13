@@ -18,6 +18,7 @@ import { PatchNicknameRequestDto, PatchProfileImageRequestDto } from 'apis/dto/r
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import type { Value } from 'react-calendar/dist/cjs/shared/types';
+import axios from 'axios';
 
 //          component: 유저 페이지          //
 const User = () => {
@@ -54,16 +55,105 @@ const User = () => {
 
   const diaryContentRef = useRef<HTMLTextAreaElement | null>(null);
 
-  const handleSaveDiary = useCallback(() => {
+  const [cookies] = useCookies();
+
+  // 운동 기록 불러오기 함수
+  const fetchExerciseDiaries = useCallback(async () => {
+    try {
+      const accessToken = cookies.accessToken;
+      if (!accessToken) return;
+
+      const today = new Date();
+      const startDate = new Date(today.getFullYear(), today.getMonth(), 1)
+        .toISOString().split('T')[0];
+      const endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0)
+        .toISOString().split('T')[0];
+
+      const response = await axios.get(
+        `http://localhost:4000/api/v1/exercise-diary/list/${startDate}/${endDate}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json'
+          },
+          withCredentials: true
+        }
+      );
+
+      console.log('Fetch Response:', response.data);
+
+      if (response.data.exerciseDiaryList) {
+        const entries: {[key: string]: string} = {};
+        response.data.exerciseDiaryList.forEach((diary: any) => {
+          entries[diary.exerciseDate] = diary.contents;
+        });
+        setDiaryEntries(entries);
+      }
+    } catch (error) {
+      console.error('Failed to fetch exercise diaries:', error);
+    }
+  }, [cookies.accessToken]);
+
+  // 운동 기록 저장 함수 수정
+  const handleSaveDiary = useCallback(async () => {
     if (!selectedDate || !diaryContentRef.current) return;
     const dateStr = selectedDate.toISOString().split('T')[0];
-    setDiaryEntries(prev => ({
-      ...prev,
-      [dateStr]: diaryContentRef.current!.value
-    }));
-    setShowDiaryModal(false);
-    document.body.classList.remove('modal-open');
-  }, [selectedDate]);
+    const content = diaryContentRef.current.value;
+
+    try {
+        const accessToken = cookies.accessToken;
+        if (!accessToken) {
+            navigator(AUTH_PATH);
+            return;
+        }
+
+        console.log('Attempting to save diary:', { dateStr, content });
+
+        const response = await axios.post(
+            'http://localhost:4000/api/v1/exercise-diary',
+            {
+                exerciseDate: dateStr,
+                contents: content
+            },
+            {
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json'
+                },
+                withCredentials: true
+            }
+        ).catch(error => {
+            console.error('Axios error details:', {
+                message: error.message,
+                response: error.response,
+                request: error.request
+            });
+            throw error;
+        });
+
+        console.log('Save Response:', response.data);
+
+        if (response.data.code === 'SU') {
+            await fetchExerciseDiaries();
+            setShowDiaryModal(false);
+            document.body.classList.remove('modal-open');
+        } else {
+            throw new Error(`Server returned code: ${response.data.code}`);
+        }
+    } catch (error: any) {
+        console.error('Failed to save exercise diary:', error);
+        if (error.response) {
+            console.error('Error response:', error.response.data);
+            alert(`운동 기록 저장 실패: ${error.response.data.message || '알 수 없는 오류'}`);
+        } else if (error.request) {
+            console.error('No response received');
+            alert('서버로부터 응답이 없습니다.');
+        } else {
+            console.error('Error details:', error);
+            alert('운동 기록 저장에 실패했습니다.');
+        }
+    }
+  }, [selectedDate, cookies.accessToken, navigator, fetchExerciseDiaries]);
 
   // Memoize tileContent to prevent re-renders
   const tileContent = useMemo(() => ({ date }: { date: Date }) => {
@@ -361,6 +451,13 @@ const User = () => {
     }
   }, [searchEmail, user]);
 
+  // 페이지 로드 시와 isMyPage가 변경될 때 데이터 불러오기
+  useEffect(() => {
+    if (isMyPage) {
+      fetchExerciseDiaries();
+    }
+  }, [isMyPage, fetchExerciseDiaries]);
+
   //          render: 유저 페이지 렌더링          //
   return (
     <div className="user-page-container">
@@ -422,12 +519,12 @@ const User = () => {
             <textarea
               ref={diaryContentRef}
               defaultValue={diaryContent}
-              placeholder="오늘의 운동을 기록해보세요...
-              
+              placeholder={`오늘의 운동을 기록해보세요...
+
 예시:
 - 스쿼트 3세트 (12회)
 - 데드리프트 4세트 (10회)
-- 러닝 30분"
+- 러닝 30분`}
             />
             <div className="diary-modal-buttons">
               <button onClick={handleCloseModal}>취소</button>
