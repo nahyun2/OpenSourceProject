@@ -16,7 +16,7 @@ import lombok.Getter;
 @Getter
 public class GetCommentListResponseDto extends ResponseDto {
     
-    List<CommentListItem> commentList;
+    private List<CommentListItem> commentList;
 
     private GetCommentListResponseDto(String code, String message, List<CommentListResultSet> resultSets) {
         super(code, message);
@@ -33,4 +33,8 @@ public class GetCommentListResponseDto extends ResponseDto {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
     }
 
+    public static ResponseEntity<ResponseDto> notExistParentComment() {
+        ResponseDto result = new ResponseDto(ResponseCode.NOT_EXIST_COMMENT, ResponseMessage.NOT_EXIST_COMMENT);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
+    }
 }

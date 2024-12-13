@@ -118,3 +118,10 @@ CREATE TABLE `exercise_diary` (
   KEY `fk_exercise_diary_user_idx` (`user_email`),
   CONSTRAINT `fk_exercise_diary_user` FOREIGN KEY (`user_email`) REFERENCES `user` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin COMMENT='운동 일지 테이블';
+
+ALTER TABLE `comment` 
+ADD COLUMN `parent_comment_number` int NULL COMMENT '부모 댓글 번호' AFTER `write_datetime`,
+ADD CONSTRAINT `comment_parent_FK` 
+    FOREIGN KEY (`parent_comment_number`) 
+    REFERENCES `comment` (`comment_number`) 
+    ON DELETE CASCADE;

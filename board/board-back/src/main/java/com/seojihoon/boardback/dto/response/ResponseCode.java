@@ -16,5 +16,7 @@ public interface ResponseCode {
     String NO_PERMISSION = "NP";
 
     String DATABASE_ERROR = "DBE";
-
+    String NOT_ALLOW_NESTED_REPLY = "NNR";
+    String NOT_EXIST_COMMENT = "NC";
+    String NOT_EXIST_PARENT_COMMENT = "NPC";
 }

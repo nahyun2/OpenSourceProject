@@ -12,4 +12,6 @@ import lombok.Setter;
 public class PostCommentRequestDto {
     @NotBlank
     private String content;
+    
+    private Integer parentCommentNumber;
 }

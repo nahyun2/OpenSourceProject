@@ -93,14 +93,29 @@ public class BoardServiceImplement implements BoardService {
     public ResponseEntity<? super PostCommentResponseDto> postComment(PostCommentRequestDto dto, Integer boardNumber, String email) {
         
         try {
-
             BoardEntity boardEntity = boardRepository.findByBoardNumber(boardNumber);
             if (boardEntity == null) return PostCommentResponseDto.notExistBoard();
 
             boolean existedUser = userRepository.existsByEmail(email);
             if (!existedUser) return PostCommentResponseDto.notExistUser();
 
+            if (dto.getParentCommentNumber() != null) {
+                CommentEntity parentComment = commentRespository.findById(dto.getParentCommentNumber())
+                    .orElse(null);
+                if (parentComment == null) return PostCommentResponseDto.notExistParentComment();
+                
+                if (parentComment.getParentComment() != null) {
+                    return PostCommentResponseDto.notAllowNestedReply();
+                }
+            }
+
             CommentEntity commentEntity = new CommentEntity(dto, boardNumber, email);
+            
+            if (dto.getParentCommentNumber() != null) {
+                CommentEntity parentComment = commentRespository.findById(dto.getParentCommentNumber()).get();
+                commentEntity.setParentComment(parentComment);
+            }
+
             commentRespository.save(commentEntity);
 
             boardEntity.increaseCommentCount();
@@ -112,7 +127,6 @@ public class BoardServiceImplement implements BoardService {
         }
 
         return PostCommentResponseDto.success();
-
     }
 
 	@Override
@@ -164,7 +178,6 @@ public class BoardServiceImplement implements BoardService {
         List<CommentListResultSet> resultSets = new ArrayList<>();
 
         try {
-
             boolean existedBoard = boardRepository.existsByBoardNumber(boardNumber);
             if (!existedBoard) return GetCommentListResponseDto.notExistBoard();
 
@@ -176,7 +189,6 @@ public class BoardServiceImplement implements BoardService {
         }
 
         return GetCommentListResponseDto.success(resultSets);
-
     }
 
     @Override

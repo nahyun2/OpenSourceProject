@@ -31,4 +31,14 @@ public class PostCommentResponseDto extends ResponseDto {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
     }
 
+    public static ResponseEntity<PostCommentResponseDto> notExistParentComment() {
+        PostCommentResponseDto response = new PostCommentResponseDto("CB", "Non-existent parent comment.");
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    public static ResponseEntity<PostCommentResponseDto> notAllowNestedReply() {
+        PostCommentResponseDto response = new PostCommentResponseDto("NR", "Nested replies are not allowed.");
+        return ResponseEntity.badRequest().body(response);
+    }
+
 }

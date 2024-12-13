@@ -195,8 +195,16 @@ export const postBoardRequest = async (requestBody: PostBoardRequestDto, token: 
 };
 
 // description: post comment request //
-export const postCommentRequest = async (requestBody: PostCommentRequestDto, boardNumber: string, token: string) => {
-    const result = await axios.post(POST_COMMENT_URL(boardNumber), requestBody, authorization(token))
+export const postCommentRequest = async (
+    requestBody: PostCommentRequestDto, 
+    boardNumber: string, 
+    token: string
+) => {
+    const result = await axios.post(
+        POST_COMMENT_URL(boardNumber), 
+        requestBody, 
+        authorization(token)
+    )
         .then(response => {
             const responseBody: PostCommentResponseDto = response.data;
             const { code } = responseBody;
@@ -206,9 +214,9 @@ export const postCommentRequest = async (requestBody: PostCommentRequestDto, boa
             const responseBody: ResponseDto = error.response.data;
             const { code } = responseBody;
             return code;
-        })
+        });
     return result;
-}
+};
 
 // description: put favorite request //
 export const putFavoriteRequest = async (boardNumber: string | number, token: string) => {
