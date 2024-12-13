@@ -20,15 +20,12 @@
 .user-info-profile-image-box-mypage {
     width: 120px;
     height: 120px;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
 }
 
 .user-info-profile-image-box-mypage:hover {
     opacity: 0.85;
-    cursor: pointer;
 }
 
 .user-info-profile-image-box {
@@ -75,30 +72,30 @@
 .user-info-nickname-box {
     display: flex;
     align-items: center;
-    gap: 10px;
 }
 
 .user-info-nickname {
     color: rgba(0, 0, 0, 0.7);
-
     font-size: 24px;
     font-weight: 600;
     line-height: 140%;
+    font-family: inherit;
 }
 
 .user-info-nickname-input {
     border: none;
     outline: none;
     background: none;
-    padding: 0;
-
-    display: inline-block;
-
-    color: rgba(0, 0, 0, 1);
-
+    padding: 0px;
+    
+    color: rgba(0, 0, 0, 0.7);
     font-size: 24px;
     font-weight: 600;
     line-height: 140%;
+    font-family: inherit;
+
+    /* 입력창 스타일 */
+    border-bottom: 2px solid #ffdbdb;
 }
 
 .user-info-email {
@@ -373,7 +370,7 @@
 
 .diary-modal-buttons button:last-child {
     background-color: #ffdbdb;
-    color: #666;
+    color: rgba(0, 0, 0, 1);
 }
 
 .diary-modal-buttons button:last-child:hover {
@@ -504,5 +501,23 @@ body.modal-open {
 /* diary-modal 스타일의 z-index 유지 */
 .diary-modal {
     z-index: 1050;
+}
+
+/* Ensure that the icon-button and profile image box are visible */
+.icon-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 4px;
+    margin-left: 8px;
+}
+
+.edit-light-icon {
+    width: 24px;
+    height: 24px;
+    background-image: url('/src/assets/edit-light-icon.png');
+    background-size: cover;
+    background-position: center;
 }
 

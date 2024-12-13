@@ -20,7 +20,7 @@ import 'react-calendar/dist/Calendar.css';
 import type { Value } from 'react-calendar/dist/cjs/shared/types';
 
 //          component: 유저 페이지          //
-const User = React.memo(() => {
+const User = () => {
 
   //          state: 조회하는 유저 이메일 path variable 상태           //
   const { searchEmail } = useParams();
@@ -173,6 +173,7 @@ const User = React.memo(() => {
       if (!fileInputRef.current) return;
       fileInputRef.current.click();
     };
+
     //          event handler: 닉네임 변경 버튼 클릭 이벤트 처리          //
     const onChangeNicknameButtonClickHandler = () => {
       if (!showChangeNickname) {
@@ -191,10 +192,10 @@ const User = React.memo(() => {
 
       const requestBody: PatchNicknameRequestDto = { nickname };
       patchNicknameRequest(requestBody, accessToken).then(patchNicknameResponse);
-    }
+    };
 
     //          event handler: 프로필 이미지 변경 이벤트 처리          //
-    const onProfileImageChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    const onProfileImageChangeHandler = useCallback((event: ChangeEvent<HTMLInputElement>) => {
       if (!event.target.files || !event.target.files.length) return;
 
       const file = event.target.files[0];
@@ -202,12 +203,13 @@ const User = React.memo(() => {
       data.append('file', file);
 
       fileUploadRequest(data).then(fileUploadResponse);
-    };
+    }, []);
+
     //          event handler: 닉네임 변경 이벤트 처리          //
-    const onNicknameChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-      const nickname = event.target.value;
-      setNickname(nickname);
-    };
+    const onNicknameChangeHandler = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+      const newNickname = event.target.value;
+      setNickname(newNickname);
+    }, []);
 
     //          effect: 조회하는 유저의 이메일이 변경될 때 마다 실행할 함수          //
     useEffect(() => {
@@ -354,11 +356,10 @@ const User = React.memo(() => {
 
   //          effect: 조회하는 유저의 이메일이 변경될 때 마다 실행할 함수
   useEffect(() => {
-    const isMyPage = searchEmail === user?.email;
-    if (isMyPage !== isMyPage) {
-      setMyPage(isMyPage);
+    if (searchEmail && user) {
+      setMyPage(searchEmail === user.email);
     }
-  }, [searchEmail, user?.email]);
+  }, [searchEmail, user]);
 
   //          render: 유저 페이지 렌더링          //
   return (
@@ -438,6 +439,6 @@ const User = React.memo(() => {
       <UserBoardList />
     </div>
   );
-});
+};
 
 export default User;
