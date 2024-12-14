@@ -1,0 +1,589 @@
+#user-info-wrapper {
+    padding: 40px 0;
+
+    display: flex;
+    justify-content: center;
+
+    position: relative;
+    z-index: 1;
+    background-color: white;
+}
+
+.user-info-container {
+   width: 1200px;
+   
+   display: flex;
+   align-items: center;
+   gap: 25px;
+}
+
+.user-info-profile-image-box-mypage {
+    width: 120px;
+    height: 120px;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.user-info-profile-image-box-mypage:hover {
+    opacity: 0.85;
+}
+
+.user-info-profile-image-box {
+    width: 120px;
+    height: 120px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.user-info-profile-default-image {
+    border-radius: 50% 50%;
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background-color: rgba(217, 217, 217, 1);
+}
+
+.user-info-profile-icon-box {
+    width: 40px;
+    height: 40px;
+}
+
+.user-info-profile-image {
+    border-radius: 50% 50%;
+    width: 100%;
+    height: 100%;
+
+    background-position: 50% 50%;
+    background-size: 100% 100%;
+}
+
+.user-info-meta-box {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.user-info-nickname-box {
+    display: flex;
+    align-items: center;
+}
+
+.user-info-nickname {
+    color: rgba(0, 0, 0, 0.7);
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 140%;
+    font-family: inherit;
+}
+
+.user-info-nickname-input {
+    border: none;
+    outline: none;
+    background: none;
+    padding: 0px;
+    
+    color: rgba(0, 0, 0, 0.7);
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 140%;
+    font-family: inherit;
+
+    /* 입력창 스타일 */
+    border-bottom: 2px solid #ffdbdb;
+}
+
+.user-info-email {
+    color: rgba(0, 0, 0, 0.4);
+
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 140%;
+}
+
+#user-board-wrapper {
+    padding: 20px 0 40px;
+
+    display: flex;
+    justify-content: center;
+
+    position: relative;
+    z-index: 1;
+    background-color: white;
+    overflow: visible;
+}
+
+.user-board-container {
+    width: 1200px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.user-board-title-box {
+    margin-bottom: 10px;
+}
+
+.user-board-title {
+    color: rgba(0, 0, 0, 1);
+
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 140%;
+}
+
+.user-board-contents-box {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.user-board-contents-result-box {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+}
+
+.user-board-contents-nothing {
+    height: 76px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    color: rgba(0, 0, 0, 0.4);
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 140%;
+}
+
+.user-board-button-box {
+    width: 100%;
+    height: 76px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 1);
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    margin-top: 16px;
+}
+
+.user-board-button-box:hover {
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+.user-board-button-contents {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.user-board-button-text {
+    color: rgba(0, 0, 0, 1);
+
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 140%;
+}
+
+.user-board-pagination-box {
+    margin-top: 60px;
+
+    display: flex;
+    justify-content: center;
+}
+
+/* 캘린더 섹션 스타일 */
+.calendar-section {
+    position: relative;
+    z-index: 10;
+    background-color: white;
+    padding: 40px 0;
+    display: flex;
+    justify-content: center;
+    border-bottom: 1px solid #e0e0e0;
+    margin-bottom: 20px;
+    overflow: visible;
+}
+
+.calendar-wrapper {
+    position: relative;
+    z-index: 2;
+    width: 1200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.calendar-title {
+    color: rgba(0, 0, 0, 0.8);
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.calendar-container {
+    width: 600px;
+    background-color: #fff5f5;
+    padding: 30px;
+    border-radius: 25px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border: 2px solid #e0e0e0;
+}
+
+.react-calendar {
+    width: 100%;
+    border: none;
+    background: #fff5f5;
+    font-family: 'Arial', sans-serif;
+    padding: 20px;
+}
+
+/* 헤더 (년월 표시) */
+.react-calendar__navigation {
+    background: #ffdbdb;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    padding: 10px;
+}
+
+/* 요일 표시 */
+.react-calendar__month-view__weekdays {
+    color: #666;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.9em;
+}
+
+/* 날짜 타일 */
+.react-calendar__tile {
+    padding: 15px 10px;
+    background: #ffffff;
+    border-radius: 15px;
+    margin: 3px;
+    font-size: 16px;
+    position: relative;
+}
+
+/* 선택된 날짜 */
+.react-calendar__tile--active {
+    background: #d9f7be !important;
+    color: #333;
+    border-radius: 15px;
+}
+
+/* 오늘 날짜 */
+.react-calendar__tile--now {
+    background: #fff;
+    border: 2px solid #ffdbdb;
+}
+
+/* 일기 아이콘 */
+.diary-icon {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    font-size: 12px;
+}
+
+/* 일기 모달 */
+.diary-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 35px;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    z-index: 1050;
+    width: 600px;
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.diary-modal h3 {
+    color: #666;
+    border-bottom: 2px solid #ffdbdb;
+    padding-bottom: 15px;
+}
+
+.diary-modal textarea {
+    width: 100%;
+    height: 250px;
+    padding: 20px;
+    border: 2px solid #ffdbdb;
+    border-radius: 15px;
+    resize: none;
+    margin-bottom: 25px;
+    font-size: 16px;
+    line-height: 1.8;
+    background-color: #fff;
+    transition: border-color 0.2s ease;
+    outline: none;
+}
+
+.diary-modal textarea:focus {
+    border-color: #ffc9c9;
+    box-shadow: 0 0 0 3px rgba(255, 219, 219, 0.3);
+}
+
+.diary-modal textarea::placeholder {
+    color: #999;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.diary-modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.diary-modal-buttons button {
+    padding: 10px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.diary-modal-buttons button:first-child {
+    background-color: #f0f0f0;
+}
+
+.diary-modal-buttons button:first-child:hover {
+    background-color: #e0e0e0;
+}
+
+.diary-modal-buttons button:last-child {
+    background-color: #ffdbdb;
+    color: rgba(0, 0, 0, 1);
+}
+
+.diary-modal-buttons button:last-child:hover {
+    background-color: #ffc9c9;
+}
+
+/* 모달 오버레이 스타일 수정 */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1040;
+    overflow: hidden;
+}
+
+/* 모달이 열릴 때 body 스타일 수정 */
+body.modal-open {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+/* 날짜 타일의 '일' 제거를 위한 스타일 */
+.react-calendar__month-view__days__day {
+    abbr[title] {
+        text-decoration: none;
+    }
+}
+
+/* 캘린더 섹션의 스타일을 수정 */
+.calendar-content-container {
+    display: flex;
+    gap: 30px;
+    width: 100%;
+    justify-content: center;
+}
+
+.calendar-container {
+    width: 100%;
+    max-width: 600px;  /* 기존 800px에서 수정 */
+}
+
+.recent-entries-container {
+    width: 100%;
+    max-width: 400px;
+    background-color: #fff;
+    border-radius: 25px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border: 2px solid #e0e0e0;
+}
+
+.recent-entries-container h3 {
+    color: #666;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #ffdbdb;
+    font-size: 1.2em;
+}
+
+.recent-entries-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.recent-entry-item {
+    padding: 15px;
+    background-color: #fff5f5;
+    border-radius: 12px;
+    transition: transform 0.2s ease;
+}
+
+.recent-entry-item:hover {
+    transform: translateY(-2px);
+}
+
+.recent-entry-date {
+    font-size: 0.9em;
+    color: #666;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.recent-entry-content {
+    font-size: 0.95em;
+    color: #333;
+    line-height: 1.5;
+    white-space: pre-line;
+}
+
+.no-entries-message {
+    text-align: center;
+    color: #999;
+    padding: 30px 0;
+    font-size: 0.95em;
+}
+
+/* 최상위 컨테이너 스타일 추가 */
+.user-page-container {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    background-color: white;
+    z-index: 1;
+}
+
+/* modal-overlay 스타일 수정 */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1040;
+}
+
+/* body.modal-open 스타일 수정 */
+body.modal-open {
+    overflow: hidden;
+}
+
+/* diary-modal 스타일의 z-index 유지 */
+.diary-modal {
+    z-index: 1050;
+}
+
+/* Ensure that the icon-button and profile image box are visible */
+.icon-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 4px;
+    margin-left: 8px;
+}
+
+.edit-light-icon {
+    width: 24px;
+    height: 24px;
+    background-image: url('/src/assets/edit-light-icon.png');
+    background-size: cover;
+    background-position: center;
+}
+
+/* Calendar 토요일 색상 변경 */
+.react-calendar__month-view__days__day--weekend:nth-child(7n) {
+    color: #0066cc;  /* 파란색으로 변경 */
+}
+
+/* 선택된 날짜가 토요일일 때도 파란색 유지 */
+.react-calendar__tile--active.react-calendar__month-view__days__day--weekend:nth-child(7n) {
+    color: #0066cc;
+}
+
+/* hover 상태일 때도 파란색 유지 */
+.react-calendar__tile:enabled:hover.react-calendar__month-view__days__day--weekend:nth-child(7n) {
+    color: #0066cc;
+}
+
+/* 일요일 색상 (첫 번째 열) */
+.react-calendar__month-view__days__day--weekend:nth-child(7n+1) {
+    color: #ff0000;  /* 일요일 - 빨간색 */
+}
+
+/* 토요일 색상 (마지막 열) */
+.react-calendar__month-view__days__day--weekend:nth-child(7n) {
+    color: #0066cc;  /* 토요일 - 파란색 */
+}
+
+/* 해당 월에 속하지 않는 날짜 색상 */
+.react-calendar__month-view__days__day--neighboringMonth {
+    color: #757575 !important;  /* 회색으로 고정 */
+}
+
+/* 선택된 날짜가 주말일 때의 색상 유지 */
+.react-calendar__tile--active.react-calendar__month-view__days__day--weekend:nth-child(7n) {
+    color: #0066cc;  /* 토요일 - 파란색 */
+}
+.react-calendar__tile--active.react-calendar__month-view__days__day--weekend:nth-child(7n+1) {
+    color: #ff0000;  /* 일요일 - 빨간색 */
+}
+
+/* hover 상태일 때의 색상 유지 */
+.react-calendar__tile:enabled:hover.react-calendar__month-view__days__day--weekend:nth-child(7n) {
+    color: #0066cc;  /* 토요일 - 파란색 */
+}
+.react-calendar__tile:enabled:hover.react-calendar__month-view__days__day--weekend:nth-child(7n+1) {
+    color: #ff0000;  /* 일요일 - 빨간색 */
+}
+
+/* 주말 날짜 기본 색상 설정 */
+/* 일요일 - 첫 번째 열 (7n+1) */
+.react-calendar__month-view__days__day--weekend:nth-child(7n+1),
+.react-calendar__tile--active.react-calendar__month-view__days__day--weekend:nth-child(7n+1),
+.react-calendar__tile:enabled:hover.react-calendar__month-view__days__day--weekend:nth-child(7n+1) {
+    color: #ff0000;  /* 일요일 - 빨간색 */
+}
+
+/* 토요일 - 마지막 열 (7n) */
+.react-calendar__month-view__days__day--weekend:nth-child(7n),
+.react-calendar__tile--active.react-calendar__month-view__days__day--weekend:nth-child(7n),
+.react-calendar__tile:enabled:hover.react-calendar__month-view__days__day--weekend:nth-child(7n) {
+    color: #0066cc;  /* 토요일 - 파란색 */
+}
+
+/* 해당 월에 속하지 않는 날짜는 항상 회색 */
+.react-calendar__month-view__days__day--neighboringMonth {
+    color: #757575 !important;
+}
+
