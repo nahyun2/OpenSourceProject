@@ -17,18 +17,32 @@ public interface CommentRespository extends JpaRepository<CommentEntity, Integer
     @Query(
         value=
         "SELECT " + 
+            "C.comment_number AS commentNumber, " +
             "U.nickname AS nickname, " +
             "U.profile_image_url AS profileImage, " +
             "C.contents AS content, " +
-            "C.write_datetime AS writeDatetime " +
+            "C.write_datetime AS writeDatetime, " +
+            "C.parent_comment_number AS parentCommentNumber " +
         "FROM comment AS C " +
         "INNER JOIN user AS U " +
         "ON C.user_email = U.email " +
         "WHERE C.board_number = ?1 " +
-        "ORDER BY C.write_datetime DESC ",
+        "ORDER BY " +
+            "CASE WHEN C.parent_comment_number IS NULL THEN C.comment_number ELSE C.parent_comment_number END, " +
+            "C.parent_comment_number IS NOT NULL, " +
+            "C.write_datetime",
         nativeQuery=true
     )
     List<CommentListResultSet> findByCommentList(Integer boardNumber);
+
+    @Query(
+        value = 
+        "SELECT COUNT(*) " +
+        "FROM comment AS C " +
+        "WHERE C.parent_comment_number = ?1",
+        nativeQuery = true
+    )
+    Integer countByParentCommentNumber(Integer parentCommentNumber);
 
     @Transactional
     void deleteByBoardNumber(Integer boardNumber);

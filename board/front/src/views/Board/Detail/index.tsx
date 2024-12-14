@@ -82,7 +82,7 @@ export default function BoardDetail() {
       navigator(MAIN_PATH);
     }
 
-    //          event handler: 작성자 클릭 이벤트 처리          //
+    //          event handler: 작성자 클릭 이벤�� 처리          //
     const onNicknameClickHandler = () => {
       if (!board) return;
       navigator(USER_PATH(board.writerEmail));
@@ -276,6 +276,23 @@ export default function BoardDetail() {
       getCommentListRequest(boardNumber).then(getCommentListResponse);
     }, [boardNumber]);
 
+    // BoardDetailBottom 컴포넌트 내부에 추가
+    const onReplySubmit = async (content: string, parentCommentNumber: number) => {
+      const accessToken = cookies.accessToken;
+      if (!accessToken) {
+        alert('로그인이 필요합니다.');
+        return;
+      }
+      if (!boardNumber) return;
+
+      const requestBody: PostCommentRequestDto = {
+        content,
+        parentCommentNumber
+      };
+
+      postCommentRequest(requestBody, boardNumber, accessToken).then(postCommentResponse);
+    };
+
     //          render: 게시물 상세보기 하단 컴포넌트 렌더링          //
     return (
       <div id='board-detail-bottom'>
@@ -320,7 +337,13 @@ export default function BoardDetail() {
             <div className='board-detail-bottom-comments-list-container'>
               <div className='board-detail-bottom-comments-list-title'>{'댓글 '}<span className='emphasis'>{commentsCount}</span></div>
               <div className='board-detail-bottom-comments-list-contents'>
-                {viewBoardList.map(commentItem => <CommentItem commentItem={commentItem} />)}
+                {viewBoardList.map(commentItem => (
+                  <CommentItem 
+                    key={commentItem.commentNumber}
+                    commentItem={commentItem}
+                    onReplySubmit={onReplySubmit}
+                  />
+                ))}
               </div>
             </div>
           </div>

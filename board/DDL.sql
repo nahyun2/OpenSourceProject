@@ -106,3 +106,22 @@ ON B.board_number = I.board_number;
 
 ALTER TABLE `search_log` 
 ADD COLUMN `sequence` INT PRIMARY KEY AUTO_INCREMENT COMMENT '로그번호';
+
+CREATE TABLE `exercise_diary` (
+  `diary_number` int NOT NULL AUTO_INCREMENT COMMENT '운동일지 번호',
+  `user_email` varchar(50) COLLATE utf8mb3_bin NOT NULL COMMENT '작성자 이메일',
+  `exercise_date` date NOT NULL COMMENT '운동 날짜',
+  `contents` text COLLATE utf8mb3_bin NOT NULL COMMENT '운동 내용',
+  `write_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '작성 날짜 및 시간',
+  PRIMARY KEY (`diary_number`),
+  UNIQUE KEY `unique_user_date` (`user_email`, `exercise_date`),
+  KEY `fk_exercise_diary_user_idx` (`user_email`),
+  CONSTRAINT `fk_exercise_diary_user` FOREIGN KEY (`user_email`) REFERENCES `user` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin COMMENT='운동 일지 테이블';
+
+ALTER TABLE `comment` 
+ADD COLUMN `parent_comment_number` int NULL COMMENT '부모 댓글 번호' AFTER `write_datetime`,
+ADD CONSTRAINT `comment_parent_FK` 
+    FOREIGN KEY (`parent_comment_number`) 
+    REFERENCES `comment` (`comment_number`) 
+    ON DELETE CASCADE;

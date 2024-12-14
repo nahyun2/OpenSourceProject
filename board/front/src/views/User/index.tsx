@@ -18,9 +18,10 @@ import { PatchNicknameRequestDto, PatchProfileImageRequestDto } from 'apis/dto/r
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import type { Value } from 'react-calendar/dist/cjs/shared/types';
+import axios from 'axios';
 
 //          component: 유저 페이지          //
-const User = React.memo(() => {
+const User = () => {
 
   //          state: 조회하는 유저 이메일 path variable 상태           //
   const { searchEmail } = useParams();
@@ -54,16 +55,105 @@ const User = React.memo(() => {
 
   const diaryContentRef = useRef<HTMLTextAreaElement | null>(null);
 
-  const handleSaveDiary = useCallback(() => {
+  const [cookies] = useCookies();
+
+  // 운동 기록 불러오기 함수
+  const fetchExerciseDiaries = useCallback(async () => {
+    try {
+      const accessToken = cookies.accessToken;
+      if (!accessToken) return;
+
+      const today = new Date();
+      const startDate = new Date(today.getFullYear(), today.getMonth(), 1)
+        .toISOString().split('T')[0];
+      const endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0)
+        .toISOString().split('T')[0];
+
+      const response = await axios.get(
+        `http://localhost:4000/api/v1/exercise-diary/list/${startDate}/${endDate}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json'
+          },
+          withCredentials: true
+        }
+      );
+
+      console.log('Fetch Response:', response.data);
+
+      if (response.data.exerciseDiaryList) {
+        const entries: {[key: string]: string} = {};
+        response.data.exerciseDiaryList.forEach((diary: any) => {
+          entries[diary.exerciseDate] = diary.contents;
+        });
+        setDiaryEntries(entries);
+      }
+    } catch (error) {
+      console.error('Failed to fetch exercise diaries:', error);
+    }
+  }, [cookies.accessToken]);
+
+  // 운동 기록 저장 함수 수정
+  const handleSaveDiary = useCallback(async () => {
     if (!selectedDate || !diaryContentRef.current) return;
     const dateStr = selectedDate.toISOString().split('T')[0];
-    setDiaryEntries(prev => ({
-      ...prev,
-      [dateStr]: diaryContentRef.current!.value
-    }));
-    setShowDiaryModal(false);
-    document.body.classList.remove('modal-open');
-  }, [selectedDate]);
+    const content = diaryContentRef.current.value;
+
+    try {
+        const accessToken = cookies.accessToken;
+        if (!accessToken) {
+            navigator(AUTH_PATH);
+            return;
+        }
+
+        console.log('Attempting to save diary:', { dateStr, content });
+
+        const response = await axios.post(
+            'http://localhost:4000/api/v1/exercise-diary',
+            {
+                exerciseDate: dateStr,
+                contents: content
+            },
+            {
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json'
+                },
+                withCredentials: true
+            }
+        ).catch(error => {
+            console.error('Axios error details:', {
+                message: error.message,
+                response: error.response,
+                request: error.request
+            });
+            throw error;
+        });
+
+        console.log('Save Response:', response.data);
+
+        if (response.data.code === 'SU') {
+            await fetchExerciseDiaries();
+            setShowDiaryModal(false);
+            document.body.classList.remove('modal-open');
+        } else {
+            throw new Error(`Server returned code: ${response.data.code}`);
+        }
+    } catch (error: any) {
+        console.error('Failed to save exercise diary:', error);
+        if (error.response) {
+            console.error('Error response:', error.response.data);
+            alert(`운동 기록 저장 실패: ${error.response.data.message || '알 수 없는 오류'}`);
+        } else if (error.request) {
+            console.error('No response received');
+            alert('서버로부터 응답이 없습니다.');
+        } else {
+            console.error('Error details:', error);
+            alert('운동 기록 저장에 실패했습니다.');
+        }
+    }
+  }, [selectedDate, cookies.accessToken, navigator, fetchExerciseDiaries]);
 
   // Memoize tileContent to prevent re-renders
   const tileContent = useMemo(() => ({ date }: { date: Date }) => {
@@ -159,8 +249,13 @@ const User = React.memo(() => {
     const getSignInUserResponse = (responseBody: GetSignInUserResponseDto | ResponseDto) => {
       const { code } = responseBody;
       if (code !== 'SU') {
-        setCookie('accessToken', '', { expires: new Date(), path: MAIN_PATH });
         setUser(null);
+        setCookie('accessToken', '', { 
+          expires: new Date(0),
+          path: '/'
+        });
+        // 로그아웃 시 메인 페이지로 이동
+        navigator(MAIN_PATH);
         return;
       }
 
@@ -173,6 +268,7 @@ const User = React.memo(() => {
       if (!fileInputRef.current) return;
       fileInputRef.current.click();
     };
+
     //          event handler: 닉네임 변경 버튼 클릭 이벤트 처리          //
     const onChangeNicknameButtonClickHandler = () => {
       if (!showChangeNickname) {
@@ -191,10 +287,10 @@ const User = React.memo(() => {
 
       const requestBody: PatchNicknameRequestDto = { nickname };
       patchNicknameRequest(requestBody, accessToken).then(patchNicknameResponse);
-    }
+    };
 
     //          event handler: 프로필 이미지 변경 이벤트 처리          //
-    const onProfileImageChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    const onProfileImageChangeHandler = useCallback((event: ChangeEvent<HTMLInputElement>) => {
       if (!event.target.files || !event.target.files.length) return;
 
       const file = event.target.files[0];
@@ -202,11 +298,22 @@ const User = React.memo(() => {
       data.append('file', file);
 
       fileUploadRequest(data).then(fileUploadResponse);
-    };
+    }, []);
+
     //          event handler: 닉네임 변경 이벤트 처리          //
-    const onNicknameChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-      const nickname = event.target.value;
-      setNickname(nickname);
+    const onNicknameChangeHandler = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+      const newNickname = event.target.value;
+      setNickname(newNickname);
+    }, []);
+
+    //          event handler: 로그아웃 버튼 클릭 이벤트 처리          //
+    const onLogoutButtonClickHandler = () => {
+      setUser(null);
+      setCookie('accessToken', '', { 
+        expires: new Date(0),
+        path: '/'
+      });
+      navigator(MAIN_PATH);
     };
 
     //          effect: 조회하는 유저의 이메일이 변경될 때 마다 실행할 함수          //
@@ -354,11 +461,17 @@ const User = React.memo(() => {
 
   //          effect: 조회하는 유저의 이메일이 변경될 때 마다 실행할 함수
   useEffect(() => {
-    const isMyPage = searchEmail === user?.email;
-    if (isMyPage !== isMyPage) {
-      setMyPage(isMyPage);
+    if (searchEmail && user) {
+      setMyPage(searchEmail === user.email);
     }
-  }, [searchEmail, user?.email]);
+  }, [searchEmail, user]);
+
+  // 페이지 로드 시와 isMyPage가 변경될 때 데이터 불러오기
+  useEffect(() => {
+    if (isMyPage) {
+      fetchExerciseDiaries();
+    }
+  }, [isMyPage, fetchExerciseDiaries]);
 
   //          render: 유저 페이지 렌더링          //
   return (
@@ -421,12 +534,12 @@ const User = React.memo(() => {
             <textarea
               ref={diaryContentRef}
               defaultValue={diaryContent}
-              placeholder="오늘의 운동을 기록해보세요...
-              
+              placeholder={`오늘의 운동을 기록해보세요...
+
 예시:
 - 스쿼트 3세트 (12회)
 - 데드리프트 4세트 (10회)
-- 러닝 30분"
+- 러닝 30분`}
             />
             <div className="diary-modal-buttons">
               <button onClick={handleCloseModal}>취소</button>
@@ -438,6 +551,6 @@ const User = React.memo(() => {
       <UserBoardList />
     </div>
   );
-});
+};
 
 export default User;
