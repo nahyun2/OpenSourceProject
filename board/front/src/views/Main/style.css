@@ -134,3 +134,34 @@
     display: flex;
     justify-content: center;
 }
+
+.main-bottom-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.main-bottom-filter {
+    display: flex;
+    gap: 12px;
+}
+
+.filter-button {
+    padding: 8px 16px;
+    border-radius: 20px;
+    background-color: rgba(0, 0, 0, 0.05);
+    color: rgba(0, 0, 0, 0.5);
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.filter-button:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.filter-button.selected {
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #ffffff;
+}
